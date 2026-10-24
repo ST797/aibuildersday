@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 
 type IconName =
-  | "home" | "sparkles" | "globe" | "users" | "shirt" | "box" | "film"
+  | "home" | "sparkles" | "globe" | "users" | "shirt" | "box" | "camera" | "film"
   | "store" | "search" | "bell" | "arrow" | "plus" | "play" | "chevron"
   | "clock" | "heart";
 
@@ -17,6 +17,7 @@ function Icon({ name, size = 18 }: { name: IconName; size?: number }) {
     users: <><circle cx="9" cy="8" r="3" /><path d="M3 20c0-4 2.4-6 6-6s6 2 6 6M16 5.5a3 3 0 0 1 0 5.8M18 14c2 .8 3 2.7 3 5" /></>,
     shirt: <path d="m8 4 4 2 4-2 5 3-3 5-2-1v10H8V11l-2 1-3-5 5-3Z" />,
     box: <><path d="m4 7 8-4 8 4-8 4-8-4ZM4 7v10l8 4 8-4V7M12 11v10" /></>,
+    camera: <><path d="M4 8h3l2-2h6l2 2h3a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2Z" /><circle cx="12" cy="14" r="3.2" /></>,
     film: <><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M7 4v16M17 4v16M3 9h4M17 9h4M3 15h4M17 15h4" /></>,
     store: <><path d="M4 10v10h16V10M3 10l2-6h14l2 6" /><path d="M3 10a3 3 0 0 0 5 2 3 3 0 0 0 4 0 3 3 0 0 0 4 0 3 3 0 0 0 5-2M9 20v-5h6v5" /></>,
     search: <><circle cx="11" cy="11" r="7" /><path d="m20 20-4-4" /></>,
@@ -37,7 +38,7 @@ function Icon({ name, size = 18 }: { name: IconName; size?: number }) {
   );
 }
 
-type LibraryCategory = "Worlds" | "Characters" | "Wardrobe" | "Props";
+type LibraryCategory = "Worlds" | "Characters" | "Wardrobe" | "Props" | "Camera";
 type StudioSection = "home" | Lowercase<LibraryCategory> | "projects" | "marketplace";
 
 type LibraryCard = {
@@ -76,9 +77,13 @@ const library: LibraryCard[] = [
   { id: "letter", name: "Hidden Letter", category: "Props", type: "Story clue", meta: "Aged paper", image: "https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=900&q=85", color: "#8e241c", blurb: "A handwritten clue that can start the mystery." },
   { id: "key", name: "Brass Key", category: "Props", type: "Story clue", meta: "Weathered metal", image: "https://images.unsplash.com/photo-1582139329536-e7284fece509?auto=format&fit=crop&w=900&q=85", color: "#a33b2e", blurb: "A small object that can unlock a location." },
   { id: "watch", name: "Stopped Watch", category: "Props", type: "Continuity prop", meta: "Frozen time", image: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=900&q=85", color: "#d4533f", blurb: "A timepiece for stories where time has slipped." },
+  { id: "cinematic", name: "Cinematic 35mm", category: "Camera", type: "Primary lens", meta: "Natural depth", image: "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=900&q=85", color: "#c23b2e", blurb: "A natural perspective for the main scene." },
+  { id: "wide", name: "Wide 24mm", category: "Camera", type: "Establishing lens", meta: "World scale", image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=85", color: "#8e241c", blurb: "A wide frame that shows the place first." },
+  { id: "portrait", name: "Portrait 85mm", category: "Camera", type: "Close-up lens", meta: "Character", image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=900&q=85", color: "#a33b2e", blurb: "A tight frame for faces and emotion." },
+  { id: "macro", name: "Macro 100mm", category: "Camera", type: "Detail lens", meta: "Insert shots", image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=900&q=85", color: "#d4533f", blurb: "A close look at props, hands, and small clues." },
 ];
 
-const categories: LibraryCategory[] = ["Worlds", "Characters", "Wardrobe", "Props"];
+const categories: LibraryCategory[] = ["Worlds", "Characters", "Wardrobe", "Props", "Camera"];
 
 const agents = [
   { name: "Story Director", detail: "Structures your narrative", active: true },
@@ -244,7 +249,7 @@ export default function Dashboard({ userName }: { userName: string }) {
           <p className="nav-label">Your library</p>
           {categories.map((category) => (
             <button className={`nav-item ${section === category.toLowerCase() ? "active" : ""}`} key={category} onClick={() => showSection(category.toLowerCase() as StudioSection, category)} type="button">
-              <Icon name={category === "Worlds" ? "globe" : category === "Characters" ? "users" : category === "Wardrobe" ? "shirt" : "box"} />
+              <Icon name={category === "Worlds" ? "globe" : category === "Characters" ? "users" : category === "Wardrobe" ? "shirt" : category === "Camera" ? "camera" : "box"} />
               {category}
               <span className="nav-count">{library.filter((card) => card.category === category).length}</span>
             </button>

@@ -14,9 +14,15 @@ async function createAuth() {
     );
   }
 
+  const configuredUrl = process.env.BETTER_AUTH_URL;
+  const trustedOrigins = process.env.NODE_ENV === "production"
+    ? [configuredUrl].filter((value): value is string => Boolean(value))
+    : [configuredUrl, "http://localhost:*", "http://127.0.0.1:*"].filter((value): value is string => Boolean(value));
+
   return betterAuth({
     appName: "Worldweaver",
-    baseURL: process.env.BETTER_AUTH_URL,
+    baseURL: configuredUrl,
+    trustedOrigins,
     secret,
     database: drizzleAdapter(db, {
       provider: "sqlite",

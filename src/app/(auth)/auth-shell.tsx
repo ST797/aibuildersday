@@ -5,6 +5,7 @@ type AuthShellProps = {
   eyebrow: string;
   title: string;
   description: string;
+  people?: number | null;
   children: ReactNode;
 };
 
@@ -18,7 +19,12 @@ function Sparkles() {
   );
 }
 
-export default function AuthShell({ eyebrow, title, description, children }: AuthShellProps) {
+function peopleLabel(people: number) {
+  if (people === 1) return "person is on PREVIEWS";
+  return "people are on PREVIEWS";
+}
+
+export default function AuthShell({ eyebrow, title, description, people = null, children }: AuthShellProps) {
   return (
     <main className="auth-page">
       <section className="auth-visual">
@@ -32,9 +38,17 @@ export default function AuthShell({ eyebrow, title, description, children }: Aut
           <blockquote>“Every great world begins with a single sentence.”</blockquote>
           <p>Write the story. Meet your crew. Build something unforgettable.</p>
         </div>
-        <div className="visual-agents">
-          <div className="agent-stack"><i>SD</i><i>WC</i><i>SH</i><i>CS</i></div>
-          <span><strong>4 specialist agents</strong><small>ready to build with you</small></span>
+        <div className="visual-foot">
+          {typeof people === "number" && (
+            <div className="visual-people">
+              <strong>{people}</strong>
+              <span>{people === 0 ? "Be the first person on PREVIEWS" : peopleLabel(people)}</span>
+            </div>
+          )}
+          <div className="visual-agents">
+            <div className="agent-stack"><i>SD</i><i>WC</i><i>SH</i><i>CS</i></div>
+            <span><strong>4 specialist agents</strong><small>ready to build with you</small></span>
+          </div>
         </div>
       </section>
 
@@ -47,6 +61,15 @@ export default function AuthShell({ eyebrow, title, description, children }: Aut
           <p className="auth-eyebrow">{eyebrow}</p>
           <h1>{title}</h1>
           <p className="auth-description">{description}</p>
+          {typeof people === "number" && (
+            <p className="auth-people">
+              {people === 0 ? (
+                <span>Be the first person on PREVIEWS.</span>
+              ) : (
+                <><strong>{people}</strong><span>{peopleLabel(people)}.</span></>
+              )}
+            </p>
+          )}
           {children}
         </div>
         <p className="auth-footer">© 2026 PREVIEWS · Built with AgenticOrg</p>
