@@ -118,6 +118,16 @@ export const project = sqliteTable(
   ],
 );
 
+export const studioPlan = sqliteTable("studio_plan", {
+  userId: text("user_id")
+    .primaryKey()
+    .references(() => user.id, { onDelete: "cascade" }),
+  planId: text("plan_id").notNull(),
+  purchasedAt: integer("purchased_at", { mode: "timestamp_ms" })
+    .default(now)
+    .notNull(),
+});
+
 export const agentConfig = sqliteTable("agent_config", {
   role: text("role").primaryKey(),
   agentId: text("agent_id").notNull(),

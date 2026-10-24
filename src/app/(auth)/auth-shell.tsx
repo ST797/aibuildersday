@@ -1,11 +1,12 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import type { StudioPeople } from "@/lib/people-count";
 
 type AuthShellProps = {
   eyebrow: string;
   title: string;
   description: string;
-  people?: number | null;
+  people?: StudioPeople | null;
   children: ReactNode;
 };
 
@@ -19,9 +20,32 @@ function Sparkles() {
   );
 }
 
-function peopleLabel(people: number) {
-  if (people === 1) return "person is on PREVIEWS";
-  return "people are on PREVIEWS";
+function initials(name: string) {
+  const parts = name.split(/\s+/).filter(Boolean);
+  if (parts.length >= 2) return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+  return (parts[0] ?? name).slice(0, 2).toUpperCase();
+}
+
+function PeopleCast({ people, compact = false }: { people: StudioPeople; compact?: boolean }) {
+  if (people.total === 0) {
+    return <p className="people-empty">Be the first person here.</p>;
+  }
+
+  const extra = Math.max(0, people.total - people.names.length);
+  return (
+    <div className={`people-cast ${compact ? "compact" : ""}`}>
+      <div className="people-letters" aria-hidden="true">
+        {people.names.map((name, index) => (
+          <span key={`${name}-${index}`}>{initials(name)}</span>
+        ))}
+        {extra > 0 && <span className="more">+{extra}</span>}
+      </div>
+      <p>
+        <strong>{people.total}</strong>
+        <span>{people.total === 1 ? "person here" : "people here"}</span>
+      </p>
+    </div>
+  );
 }
 
 export default function AuthShell({ eyebrow, title, description, people = null, children }: AuthShellProps) {
@@ -29,26 +53,17 @@ export default function AuthShell({ eyebrow, title, description, people = null, 
     <main className="auth-page">
       <section className="auth-visual">
         <div className="auth-visual-overlay" />
-        <Link className="auth-brand light" href="/login">
-          <span><Sparkles /></span>
-          PREVIEWS
-        </Link>
+        <div className="visual-top">
+          <Link className="auth-brand light" href="/login">
+            <span><Sparkles /></span>
+            PREVIEWS
+          </Link>
+          {people && <PeopleCast people={people} />}
+        </div>
         <div className="visual-copy">
           <span className="visual-pill">AI production studio</span>
           <blockquote>“Every great world begins with a single sentence.”</blockquote>
           <p>Write the story. Meet your crew. Build something unforgettable.</p>
-        </div>
-        <div className="visual-foot">
-          {typeof people === "number" && (
-            <div className="visual-people">
-              <strong>{people}</strong>
-              <span>{people === 0 ? "Be the first person on PREVIEWS" : peopleLabel(people)}</span>
-            </div>
-          )}
-          <div className="visual-agents">
-            <div className="agent-stack"><i>SD</i><i>WC</i><i>SH</i><i>CS</i></div>
-            <span><strong>4 specialist agents</strong><small>ready to build with you</small></span>
-          </div>
         </div>
       </section>
 
@@ -61,15 +76,7 @@ export default function AuthShell({ eyebrow, title, description, people = null, 
           <p className="auth-eyebrow">{eyebrow}</p>
           <h1>{title}</h1>
           <p className="auth-description">{description}</p>
-          {typeof people === "number" && (
-            <p className="auth-people">
-              {people === 0 ? (
-                <span>Be the first person on PREVIEWS.</span>
-              ) : (
-                <><strong>{people}</strong><span>{peopleLabel(people)}.</span></>
-              )}
-            </p>
-          )}
+          {people && <PeopleCast people={people} compact />}
           {children}
         </div>
         <p className="auth-footer">© 2026 PREVIEWS · Built with AgenticOrg</p>

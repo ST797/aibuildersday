@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import { findPlan } from "@/lib/plans";
 
 type IconName =
   | "home" | "sparkles" | "globe" | "users" | "shirt" | "box" | "camera" | "film"
@@ -100,7 +102,8 @@ function timeAgo(value: string, now: number) {
   return `${Math.round(hours / 24)}d ago`;
 }
 
-export default function Dashboard({ userName }: { userName: string }) {
+export default function Dashboard({ userName, planId = null }: { userName: string; planId?: string | null }) {
+  const plan = findPlan(planId);
   const router = useRouter();
   const storyRef = useRef<HTMLTextAreaElement>(null);
   const [story, setStory] = useState("");
@@ -263,14 +266,12 @@ export default function Dashboard({ userName }: { userName: string }) {
           </button>
         </nav>
         <div className="sidebar-bottom">
-          <div className="usage">
-            <div className="usage-row"><span>Studio credits</span><strong>72%</strong></div>
-            <div className="usage-track"><span /></div>
-            <small>1,440 of 2,000 remaining</small>
-          </div>
           <div className="profile-card">
             <span className="avatar">{initials}</span>
-            <span><strong>{userName}</strong><small>Free studio</small></span>
+            <span>
+              <strong>{userName}</strong>
+              <Link className="plan-link" href="/plans">{plan ? plan.name : "Free studio"}</Link>
+            </span>
           </div>
           <button className="sign-out-button" disabled={!canSignOut} onClick={signOut} type="button">Sign out</button>
         </div>
