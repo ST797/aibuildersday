@@ -1,0 +1,27 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "worldweaver",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-10-24",
+  "compatibility_flags": ["nodejs_compat"],
+  "upload_source_maps": true,
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "previews",
+      "database_id": "a91c46cf-6ea7-4a9b-a13f-3c54c692d290",
+      "migrations_dir": "migrations",
+      "remote": true
+    }
+  ],
+  "vars": {
+    "AGENTICORG_BASE_URL": "https://agenticorg.hackathon.pinelabs.com"
+  },
+  "observability": {
+    "enabled": true
+  }
+}
