@@ -1,4 +1,3 @@
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
@@ -6,21 +5,19 @@ import { getDb } from "@/db";
 import * as schema from "@/db/schema";
 
 async function createAuth() {
-  const [{ env }, db] = await Promise.all([
-    getCloudflareContext({ async: true }),
-    getDb(),
-  ]);
+  const db = await getDb();
+  const secret = process.env.BETTER_AUTH_SECRET;
 
-  if (!env.BETTER_AUTH_SECRET) {
+  if (!secret) {
     throw new Error(
-      "BETTER_AUTH_SECRET is missing. Add it to .dev.vars locally and as a Cloudflare secret in production.",
+      "BETTER_AUTH_SECRET is missing. Add it to .env.local and your Vercel project env.",
     );
   }
 
   return betterAuth({
     appName: "Worldweaver",
-    baseURL: env.BETTER_AUTH_URL,
-    secret: env.BETTER_AUTH_SECRET,
+    baseURL: process.env.BETTER_AUTH_URL,
+    secret,
     database: drizzleAdapter(db, {
       provider: "sqlite",
       schema,

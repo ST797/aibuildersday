@@ -1,6 +1,9 @@
 import { getCurrentUser } from "@/lib/current-user";
 import { runProjectPipeline } from "@/lib/agenticorg";
 
+// Agent pipeline can take several minutes; requires a Vercel plan that allows this.
+export const maxDuration = 300;
+
 type RouteContext = {
   params: Promise<{ id: string }>;
 };

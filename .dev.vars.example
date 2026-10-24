@@ -1,9 +1,0 @@
-# Generate with: openssl rand -base64 32
-BETTER_AUTH_SECRET=replace-with-a-random-secret-at-least-32-characters
-
-# Change this to the deployed Worker URL before production deployment.
-BETTER_AUTH_URL=http://localhost:3000
-
-# Issued by AgenticOrg. Never expose this value to browser code.
-AGENTICORG_API_KEY=ao_sk_replace-with-your-key
-AGENTICORG_BASE_URL=https://agenticorg.hackathon.pinelabs.com

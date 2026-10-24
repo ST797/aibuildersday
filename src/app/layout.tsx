@@ -13,7 +13,11 @@ export const metadata: Metadata = {
   description: "An agentic creative studio for choosing worlds, characters, and shots.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html
       lang="en"

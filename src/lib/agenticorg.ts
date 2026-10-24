@@ -1,4 +1,3 @@
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { and, eq } from "drizzle-orm";
 import { AgenticOrg, toAgentRunResult, type AgentRunResult } from "agenticorg-sdk";
 import { getDb } from "@/db";
@@ -240,14 +239,14 @@ export async function runProjectPipeline(projectId: string, userId: string) {
     return { status: "completed", output: record.finalOutput };
   }
 
-  const { env } = await getCloudflareContext({ async: true });
-  if (!env.AGENTICORG_API_KEY) {
+  const apiKey = process.env.AGENTICORG_API_KEY;
+  if (!apiKey) {
     throw new Error(
-      "AgenticOrg is not configured. Add AGENTICORG_API_KEY to .dev.vars and the Worker secrets.",
+      "AgenticOrg is not configured. Add AGENTICORG_API_KEY to .env.local and your Vercel project env.",
     );
   }
 
-  const client = createClient(env.AGENTICORG_API_KEY, env.AGENTICORG_BASE_URL);
+  const client = createClient(apiKey, process.env.AGENTICORG_BASE_URL);
   const outputs: Partial<Record<AgentRole, Record<string, unknown>>> = {};
 
   await db.update(project).set({
@@ -283,8 +282,8 @@ export async function runProjectPipeline(projectId: string, userId: string) {
         result = await runAgentCompatible(
           client,
           definition,
-          env.AGENTICORG_API_KEY,
-          env.AGENTICORG_BASE_URL ?? "https://app.agenticorg.ai",
+          apiKey,
+          process.env.AGENTICORG_BASE_URL ?? "https://app.agenticorg.ai",
           {
           inputs: {
             story: record.story,
